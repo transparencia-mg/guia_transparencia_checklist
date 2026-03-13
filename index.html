@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist - Transparência Ativa (Obrigatoriedades e Relatório)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            padding: 32px 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .evaluation-header {
+            background: #f8fafc;
+            padding: 24px 40px;
+            border-bottom: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        .progress-bar-container {
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress-bar {
+            height: 24px;
+            background: #edf2f7;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+            transition: width 0.5s ease;
+            width: 0%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .percentage-display {
+            text-align: right;
+            margin-top: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2f855a;
+        }
+
+        .checklist-section {
+            padding: 30px 40px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: #1a365d;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4299e1;
+            display: inline-block;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #2c5282;
+            margin: 20px 0 15px;
+            padding-left: 10px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .tag-obrigatorio {
+            background: #c53030;
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+
+        .tag-opcional {
+            background: #718096;
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+
+        .tag-especifico {
+            background: #dd6b20;
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background: #f7fafc;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #cbd5e0;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .criteria-text {
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item.na input[type="checkbox"] {
+            accent-color: #a0aec0;
+        }
+
+        .checkbox-item.atende input[type="checkbox"] {
+            accent-color: #48bb78;
+        }
+
+        .observations-input {
+            width: 200px;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .warning-text {
+            background: #feebc8;
+            border-left: 4px solid #dd6b20;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            color: #7b341e;
+            font-size: 14px;
+        }
+
+        .info-text {
+            background: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            color: #0050b3;
+            font-size: 14px;
+        }
+
+        .actions {
+            padding: 30px 40px;
+            background: #f8fafc;
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #2c5282;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a365d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 82, 130, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 2px solid #cbd5e0;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+            border-color: #a0aec0;
+        }
+
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: #2c5282;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8fafc;
+            color: #718096;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Estilo para impressão em paisagem */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 1.5cm;
+            }
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            .actions, .progress-bar-container, .footer, .btn, .modal, .no-print {
+                display: none !important;
+            }
+            .checklist-section {
+                page-break-inside: avoid;
+                padding: 15px 20px;
+            }
+            table {
+                font-size: 9pt;
+            }
+            td, th {
+                padding: 4px 6px;
+            }
+            input[type="checkbox"] {
+                transform: scale(0.7);
+            }
+            .section-title {
+                font-size: 16pt;
+            }
+            .tag-obrigatorio, .tag-opcional, .tag-especifico {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        @media print {
+            .print-only {
+                display: block;
+            }
+        }
+
+        .resultado-classificacao {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .relatorio-final {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #cbd5e0;
+        }
+
+        .relatorio-final h3 {
+            color: #1a365d;
+            margin-bottom: 15px;
+        }
+
+        .relatorio-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .item-atendido {
+            background: #f0fff4;
+            border-left: 4px solid #38a169;
+        }
+
+        .item-pendente {
+            background: #fff5f5;
+            border-left: 4px solid #fc8181;
+        }
+
+        .item-especifico {
+            background: #fff3e0;
+            border-left: 4px solid #dd6b20;
+        }
+
+        .link-test {
+            color: #3182ce;
+            text-decoration: none;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .link-test:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Checklist de Transparência Ativa</h1>
+            <p>Avaliação do Menu Transparência do Sítio Institucional - Conformidade com Decreto 45.969/2012 e legislação correlata</p>
+        </div>
+
+        <div class="evaluation-header">
+            <div class="form-group">
+                <label>Órgão/Entidade</label>
+                <input type="text" id="orgao" placeholder="Digite o nome do órgão">
+            </div>
+            <div class="form-group">
+                <label>Sigla</label>
+                <input type="text" id="sigla" placeholder="Sigla do órgão">
+            </div>
+            <div class="form-group">
+                <label>Responsável pela Avaliação</label>
+                <input type="text" id="responsavel" placeholder="Nome do responsável">
+            </div>
+            <div class="form-group">
+                <label>E-mail Institucional</label>
+                <input type="email" id="email" placeholder="email@orgao.gov.br">
+            </div>
+            <div class="form-group">
+                <label>Data da Avaliação</label>
+                <input type="date" id="data" value="">
+            </div>
+        </div>
+
+        <!-- Perguntas de controle para itens específicos -->
+        <div class="checklist-section" style="background: #f0f9ff;">
+            <h2 class="section-title">📌 Controle de Itens Específicos</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="form-group">
+                    <label>O órgão/entidade teve processos para encaminhar ao TCE/MG?</label>
+                    <select id="teveTCE" onchange="toggleEspecifico()">
+                        <option value="">-- Selecione --</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>O órgão/entidade recebeu doações ou comodatos?</label>
+                    <select id="teveDoacao" onchange="toggleEspecifico()">
+                        <option value="">-- Selecione --</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+            </div>
+            <div class="info-text">
+                ⚠️ <strong>Regras:</strong> Itens obrigatórios (com tag <span class="tag-obrigatorio">OBRIGATÓRIO</span>) contam para a nota final. 
+                Itens específicos só são obrigatórios se o órgão teve a ocorrência. 
+                Itens opcionais (Participação Social e Bens) não interferem na nota.
+            </div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+            <div class="percentage-display" id="percentageDisplay">0% de conformidade</div>
+            <div id="classificacaoResultado" class="resultado-classificacao"></div>
+        </div>
+
+        <div id="checklistContent">
+            <!-- 1. ESTRUTURA DO MENU TRANSPARÊNCIA (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">1. ESTRUTURA DO MENU TRANSPARÊNCIA <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Menu Transparência visível na página inicial</td>
+                                <td class="criteria-text">O menu está disponível no primeiro nível do site</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="1" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="1" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Link do Menu Transparência</td>
+                                <td class="criteria-text">O link funciona corretamente</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="1" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="1" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto padrão do Menu Transparência</td>
+                                <td class="criteria-text">Contém texto explicativo padrão sobre transparência ativa</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="1" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="1" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 2. SERVIÇO DE INFORMAÇÃO AO CIDADÃO (SIC) (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">2. SERVIÇO DE INFORMAÇÃO AO CIDADÃO (SIC) <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item SIC no menu</td>
+                                <td>Existe o item "Serviço de Informação ao Cidadão"</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="2" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="2" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo LAI</td>
+                                <td>Contém explicação sobre a Lei de Acesso à Informação</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="2" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="2" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Link para e-SIC</td>
+                                <td>Direciona corretamente para o sistema de pedidos de informação (<a href="http://www.acessoainformacao.mg.gov.br" target="_blank">e-SIC</a>)</td>
+                                <td><a href="http://www.acessoainformacao.mg.gov.br" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="2" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="2" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Relatórios de pedidos</td>
+                                <td>Link para relatórios de pedidos de acesso à informação (<a href="https://acessoainformacao.mg.gov.br/sistema/site/relatorios_estatisticos.aspx" target="_blank">Relatórios</a>)</td>
+                                <td><a href="https://acessoainformacao.mg.gov.br/sistema/site/relatorios_estatisticos.aspx" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="2" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="2" data-item="4" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Responsável SIC</td>
+                                <td>Nome, telefone e e-mail do responsável pelo SIC</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="2" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="2" data-item="5" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. INFORMAÇÕES CLASSIFICADAS E DESCLASSIFICADAS (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">3. INFORMAÇÕES CLASSIFICADAS E DESCLASSIFICADAS <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Não se aplica</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item disponível no menu</td>
+                                <td>Existe seção específica</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="3" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="3" data-item="1" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="3" data-item="1" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td>Explicação sobre classificação e desclassificação</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="3" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="3" data-item="2" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="3" data-item="2" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Documento de informações</td>
+                                <td>Lista ou documento publicado (verificar <a href="https://acessoainformacao.mg.gov.br/sistema/relatorios/anual/DownloadDados.aspx" target="_blank">link</a>)</td>
+                                <td><a href="https://acessoainformacao.mg.gov.br/sistema/relatorios/anual/DownloadDados.aspx" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="3" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="3" data-item="3" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="3" data-item="3" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Data de atualização</td>
+                                <td>Informada no conteúdo</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="3" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="3" data-item="4" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="3" data-item="4" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="warning-text">
+                    ⚠️ Caso não existam informações classificadas: Deve haver texto padrão informando inexistência + data de atualização.
+                </div>
+            </div>
+
+            <!-- 4. RELATÓRIO DE GESTÃO (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">4. RELATÓRIO DE GESTÃO <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item Relatório de Gestão</td>
+                                <td>Disponível no menu</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="4" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="4" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Documentos da prestação de contas</td>
+                                <td>Ofício de encaminhamento, Rol de Responsáveis, Relatórios de Gestão, Relatório da UCI, Julgamento das Contas</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="4" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="4" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Atualização anual</td>
+                                <td>Publicado em até 30 dias após remessa ao TCE/MG</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="4" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="4" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. PROGRAMAS E AÇÕES (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">5. PROGRAMAS E AÇÕES <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item Programas e Ações</td>
+                                <td>Disponível no menu</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="5" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="5" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Execução do PPAG</td>
+                                <td>Link para consulta da execução do PPAG (<a href="https://www.transparencia.mg.gov.br/planejamento-e-resultados/planejamento-e-monitoramento-ppag/programacao-execucao-ppag-programa/ppagprograma-programas/5/2023/0/0" target="_blank">link</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/planejamento-e-resultados/planejamento-e-monitoramento-ppag/programacao-execucao-ppag-programa/ppagprograma-programas/5/2023/0/0" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="5" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="5" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Documento PPAG</td>
+                                <td>Documento ou link para SEPLAG</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/leis-orcamentarias" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="5" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="5" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Documento LDO</td>
+                                <td>Documento ou link para SEPLAG</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/leis-orcamentarias" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="5" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="5" data-item="4" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Documento LOA</td>
+                                <td>Documento ou link para SEPLAG</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/leis-orcamentarias" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="5" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="5" data-item="5" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 6. OBRAS PÚBLICAS (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">6. OBRAS PÚBLICAS <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Não se aplica</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item Obras Públicas</td>
+                                <td>Existe no menu</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="6" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="6" data-item="1" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="6" data-item="1" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Lista de obras</td>
+                                <td>Informações completas das obras em andamento (<a href="https://www.transparencia.mg.gov.br/pagina/obras-publicas" target="_blank">consulta</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/obras-publicas" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="6" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="6" data-item="2" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="6" data-item="2" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Documentos da obra</td>
+                                <td>Contrato, termo aditivo, projeto básico e executivo</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="6" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="6" data-item="3" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="6" data-item="3" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Relatório trimestral</td>
+                                <td>Disponível</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="6" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="6" data-item="4" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="6" data-item="4" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Informação de inexistência</td>
+                                <td>Caso não haja obras</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="6" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="6" data-item="5" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="6" data-item="5" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Lista de obras paralisadas</td>
+                                <td>Motivo, responsável, data prevista para reinício</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="6" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="6" data-item="6" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="6" data-item="6" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="warning-text">
+                    ⚠️ O guia recomenda disponibilizar dados como objeto da obra, contrato, empresa, situação e percentual concluído.
+                </div>
+            </div>
+
+            <!-- 7. DESPESAS E RECEITAS (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">7. DESPESAS E RECEITAS <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item disponível</td>
+                                <td>Existe no menu</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto sobre despesas</td>
+                                <td>Texto explicativo</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Link para despesas</td>
+                                <td>Direciona ao Portal da Transparência (<a href="http://www.transparencia.mg.gov.br/despesa-estado/despesa" target="_blank">link</a>)</td>
+                                <td><a href="http://www.transparencia.mg.gov.br/despesa-estado/despesa" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto sobre receitas</td>
+                                <td>Texto explicativo</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7" data-item="4" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Link para receitas</td>
+                                <td>Direciona ao Portal da Transparência (<a href="https://www.transparencia.mg.gov.br/receitas/estado-receita" target="_blank">link</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/receitas/estado-receita" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7" data-item="5" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Atualização (últimos 3 anos)</td>
+                                <td>Dados dos últimos 3 anos disponíveis</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7" data-item="6" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 7.1 ORDEM CRONOLÓGICA DE PAGAMENTO (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">7.1 ORDEM CRONOLÓGICA DE PAGAMENTO <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item disponível no menu</td>
+                                <td>Existe item específico "Ordem Cronológica de Pagamento"</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.1" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.1" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Lista mensal disponível</td>
+                                <td>Publicação mensal da ordem cronológica de pagamentos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.1" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.1" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Dados mínimos da lista</td>
+                                <td>Contém data de vencimento, data de pagamento, credor, valor e identificação da origem do crédito</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.1" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.1" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Histórico de 3 anos</td>
+                                <td>Disponibiliza dados dos últimos 3 anos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.1" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.1" data-item="4" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Formato editável</td>
+                                <td>Possibilidade de gravar em formato editável (csv, odt, etc.)</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.1" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.1" data-item="5" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Justificativas de alteração</td>
+                                <td>Publica as justificativas quando há alteração da ordem cronológica</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.1" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.1" data-item="6" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="warning-text">
+                    ⚠️ Exigência da Lei 14.133/2021, art. 141, §3º.
+                </div>
+            </div>
+
+            <!-- 7.2 DESPESAS COM PUBLICIDADE (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">7.2 DESPESAS COM PUBLICIDADE <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Não se aplica</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item disponível no menu</td>
+                                <td>Existe item específico "Despesas com Publicidade"</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.2" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.2" data-item="1" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="7.2" data-item="1" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Relatório trimestral</td>
+                                <td>Publicação de relatório trimestral (até 30/04, 30/07, 30/10, 31/01)</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.2" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.2" data-item="2" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="7.2" data-item="2" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Dados conforme Anexo I - Decreto 48.940/2024</td>
+                                <td>Contém todos os campos obrigatórios (mês, órgão, objeto, credor, período, público, avaliação, fonte, despesas)</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.2" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.2" data-item="3" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="7.2" data-item="3" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Histórico de 3 anos</td>
+                                <td>Disponibiliza dados dos últimos 3 anos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.2" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.2" data-item="4" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="7.2" data-item="4" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Formato editável</td>
+                                <td>Possibilidade de gravar em formato editável (csv preferencialmente)</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.2" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.2" data-item="5" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="7.2" data-item="5" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Data de atualização</td>
+                                <td>A página/arquivo informa a data da última atualização</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.2" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.2" data-item="6" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="7.2" data-item="6" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Informação de inexistência</td>
+                                <td>Caso não haja gastos no trimestre, informa expressamente</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="7.2" data-item="7" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="7.2" data-item="7" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="7.2" data-item="7" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="warning-text">
+                    ⚠️ Exigência do Decreto Estadual nº 48.940/2024.
+                </div>
+            </div>
+
+            <!-- 8. COMPRAS E CONTRATOS (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">8. COMPRAS E CONTRATOS <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item no menu</td>
+                                <td>Compras e Contratos disponível</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="8" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="8" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td>Explicação sobre compras públicas</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="8" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="8" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Consulta no Portal da Transparência</td>
+                                <td>Link funcional para <a href="https://www.transparencia.mg.gov.br/pagina/licitacoes" target="_blank">licitações</a></td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/licitacoes" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="8" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="8" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Portal de Compras</td>
+                                <td>Link para licitações em andamento (<a href="https://compras.mg.gov.br/acesso-a-informacoes/consultas/" target="_blank">Portal de Compras</a>)</td>
+                                <td><a href="https://compras.mg.gov.br/acesso-a-informacoes/consultas/" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="8" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="8" data-item="4" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Lista de fiscais de contrato</td>
+                                <td>Vigentes e encerrados últimos 3 anos (<a href="https://www.transparencia.mg.gov.br/pagina/fiscais-de-contrato" target="_blank">Fiscais</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/fiscais-de-contrato" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="8" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="8" data-item="5" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Certificado de regularidade</td>
+                                <td>Link disponível (<a href="https://www.cagef.mg.gov.br/fornecedor-web/br/gov/prodemge/seplag/fornecedor/publico/index.zul" target="_blank">Certificado</a>)</td>
+                                <td><a href="https://www.cagef.mg.gov.br/fornecedor-web/br/gov/prodemge/seplag/fornecedor/publico/index.zul" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="8" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="8" data-item="6" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 9. CONVÊNIOS, REPASSES E TRANSFERÊNCIAS (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">9. CONVÊNIOS, REPASSES E TRANSFERÊNCIAS <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Não se aplica</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item no menu</td>
+                                <td>Disponível</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="9" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="9" data-item="1" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="9" data-item="1" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td>Convênios e parcerias</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="9" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="9" data-item="2" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="9" data-item="2" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Consulta de convênios (saída)</td>
+                                <td>Link para Portal da Transparência (<a href="https://www.transparencia.mg.gov.br/menu/convenios-de-saida-1" target="_blank">Convênios de Saída</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/menu/convenios-de-saida-1" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="9" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="9" data-item="3" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="9" data-item="3" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Acordos sem transferência</td>
+                                <td>Documentos publicados (<a href="https://www.transparencia.mg.gov.br/pagina/acordos-de-cooperacao-tecnica" target="_blank">Acordos</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/acordos-de-cooperacao-tecnica" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="9" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="9" data-item="4" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="9" data-item="4" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Convênios de entrada</td>
+                                <td>Link para consulta (<a href="https://www.transparencia.mg.gov.br/convenios/convenios-de-entrada/convenio-entrada" target="_blank">Entrada</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/convenios/convenios-de-entrada/convenio-entrada" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="9" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="9" data-item="5" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="9" data-item="5" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Atualização</td>
+                                <td>Últimos 3 anos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="9" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="9" data-item="6" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="9" data-item="6" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 10. SERVIDORES (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">10. SERVIDORES <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Não se aplica</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item Servidores</td>
+                                <td>Disponível</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="10" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="10" data-item="1" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="10" data-item="1" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td>Informações sobre pessoal</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="10" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="10" data-item="2" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="10" data-item="2" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Consulta remuneração</td>
+                                <td>Link ao Portal da Transparência (<a href="https://www.transparencia.mg.gov.br/remuneracao" target="_blank">Remuneração</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/remuneracao" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="10" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="10" data-item="3" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="10" data-item="3" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Lista de contratados</td>
+                                <td>Disponível (<a href="https://www.transparencia.mg.gov.br/pagina/terceirizados" target="_blank">Contratados</a>) ou texto informando inexistência</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/terceirizados" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="10" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="10" data-item="4" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="10" data-item="4" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Lista de estagiários</td>
+                                <td>Disponível (<a href="https://www.transparencia.mg.gov.br/pagina/estagiarios" target="_blank">Estagiários</a>) ou texto informando inexistência</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/pagina/estagiarios" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="10" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="10" data-item="5" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="10" data-item="5" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Atualização</td>
+                                <td>Últimos 3 anos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="10" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="10" data-item="6" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check" data-section="10" data-item="6" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 11. CONCURSOS PÚBLICOS (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">11. CONCURSOS PÚBLICOS <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item disponível</td>
+                                <td>Concursos Públicos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="11" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="11" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td>Informações sobre concursos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="11" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="11" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Concursos realizados</td>
+                                <td>Link para Portal da Transparência (<a href="https://www.transparencia.mg.gov.br/concursos-e-processos-seletivos/concursos-realizados" target="_blank">Concursos Realizados</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/concursos-e-processos-seletivos/concursos-realizados" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="11" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="11" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Concursos em andamento</td>
+                                <td>Informações ou link SEPLAG (<a href="https://www.mg.gov.br/planejamento/pagina/gestao-de-pessoas/recrutamento-e-selecao/recrutamento-e-selecao" target="_blank">Concursos em Andamento</a>)</td>
+                                <td><a href="https://www.mg.gov.br/planejamento/pagina/gestao-de-pessoas/recrutamento-e-selecao/recrutamento-e-selecao" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="11" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="11" data-item="4" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 12. DADOS ABERTOS (OBRIGATÓRIO) -->
+            <div class="checklist-section">
+                <h2 class="section-title">12. DADOS ABERTOS <span class="tag-obrigatorio">OBRIGATÓRIO</span></h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item disponível</td>
+                                <td>Dados Abertos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="12" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="12" data-item="1" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td>Explicação sobre dados abertos</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="12" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="12" data-item="2" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Portal de Dados Abertos</td>
+                                <td>Link funcional (<a href="http://dados.mg.gov.br/" target="_blank">Dados Abertos MG</a>)</td>
+                                <td><a href="http://dados.mg.gov.br/" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check obrigatorio" data-section="12" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check obrigatorio" data-section="12" data-item="3" data-type="nao"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 13. ITENS ESPECÍFICOS -->
+            <div class="checklist-section" id="especificosSection">
+                <h2 class="section-title">13. ITENS ESPECÍFICOS <span class="tag-especifico">ESPECÍFICO (condicional)</span></h2>
+                
+                <!-- 13.1 Procedimentos licitatórios enviados para o TCE/MG -->
+                <div id="tceSection" style="display: none;">
+                    <h3 class="section-subtitle">13.1 Procedimentos licitatórios enviados ao TCE/MG</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Critério</th>
+                                    <th>Link de Teste</th>
+                                    <th>Atende</th>
+                                    <th>Não atende</th>
+                                    <th>Observações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Item no menu</td>
+                                    <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                    <td><input type="checkbox" class="atende-check especifico-tce" data-section="13.1" data-item="1" data-type="atende"></td>
+                                    <td><input type="checkbox" class="nao-atende-check especifico-tce" data-section="13.1" data-item="1" data-type="nao"></td>
+                                    <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lista dos procedimentos encaminhados</td>
+                                    <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                    <td><input type="checkbox" class="atende-check especifico-tce" data-section="13.1" data-item="2" data-type="atende"></td>
+                                    <td><input type="checkbox" class="nao-atende-check especifico-tce" data-section="13.1" data-item="2" data-type="nao"></td>
+                                    <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                                </tr>
+                                <tr>
+                                    <td>Documentos publicados (links ou PDFs)</td>
+                                    <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                    <td><input type="checkbox" class="atende-check especifico-tce" data-section="13.1" data-item="3" data-type="atende"></td>
+                                    <td><input type="checkbox" class="nao-atende-check especifico-tce" data-section="13.1" data-item="3" data-type="nao"></td>
+                                    <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 13.2 Doações e Comodatos -->
+                <div id="doacaoSection" style="display: none; margin-top: 30px;">
+                    <h3 class="section-subtitle">13.2 Doações e Comodatos</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Critério</th>
+                                    <th>Link de Teste</th>
+                                    <th>Atende</th>
+                                    <th>Não atende</th>
+                                    <th>Observações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Item no menu</td>
+                                    <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                    <td><input type="checkbox" class="atende-check especifico-doacao" data-section="13.2" data-item="1" data-type="atende"></td>
+                                    <td><input type="checkbox" class="nao-atende-check especifico-doacao" data-section="13.2" data-item="1" data-type="nao"></td>
+                                    <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                                </tr>
+                                <tr>
+                                    <td>Texto explicativo</td>
+                                    <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                    <td><input type="checkbox" class="atende-check especifico-doacao" data-section="13.2" data-item="2" data-type="atende"></td>
+                                    <td><input type="checkbox" class="nao-atende-check especifico-doacao" data-section="13.2" data-item="2" data-type="nao"></td>
+                                    <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                                </tr>
+                                <tr>
+                                    <td>Relação das doações/comodatos (<a href="https://dados.mg.gov.br/dataset/doacoes-comodatos" target="_blank">link</a>)</td>
+                                    <td><a href="https://dados.mg.gov.br/dataset/doacoes-comodatos" target="_blank">testar</a></td>
+                                    <td><input type="checkbox" class="atende-check especifico-doacao" data-section="13.2" data-item="3" data-type="atende"></td>
+                                    <td><input type="checkbox" class="nao-atende-check especifico-doacao" data-section="13.2" data-item="3" data-type="nao"></td>
+                                    <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14. ITENS OPCIONAIS (NÃO CONTAM NA NOTA) -->
+            <div class="checklist-section">
+                <h2 class="section-title">14. ITENS OPCIONAIS <span class="tag-opcional">OPCIONAL (não conta na nota)</span></h2>
+                
+                <h3 class="section-subtitle">14.1 Participação Social</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Não se aplica</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item no menu</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check opcional" data-section="14.1" data-item="1" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check opcional" data-section="14.1" data-item="1" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check opcional" data-section="14.1" data-item="1" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check opcional" data-section="14.1" data-item="2" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check opcional" data-section="14.1" data-item="2" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check opcional" data-section="14.1" data-item="2" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Formas de participação (conselhos, audiências, etc.)</td>
+                                <td><a href="http://portaldosconselhos.mg.gov.br/" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check opcional" data-section="14.1" data-item="3" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check opcional" data-section="14.1" data-item="3" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check opcional" data-section="14.1" data-item="3" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="section-subtitle">14.2 Bens</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Critério</th>
+                                <th>Link de Teste</th>
+                                <th>Atende</th>
+                                <th>Não atende</th>
+                                <th>Não se aplica</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Item no menu</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check opcional" data-section="14.2" data-item="4" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check opcional" data-section="14.2" data-item="4" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check opcional" data-section="14.2" data-item="4" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Texto explicativo</td>
+                                <td><a href="#" class="link-test" onclick="window.open(this.href); return false;">testar</a></td>
+                                <td><input type="checkbox" class="atende-check opcional" data-section="14.2" data-item="5" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check opcional" data-section="14.2" data-item="5" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check opcional" data-section="14.2" data-item="5" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Bens móveis (<a href="https://www.transparencia.mg.gov.br/patrimonio/bens-moveis" target="_blank">link</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/patrimonio/bens-moveis" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check opcional" data-section="14.2" data-item="6" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check opcional" data-section="14.2" data-item="6" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check opcional" data-section="14.2" data-item="6" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                            <tr>
+                                <td>Frota (<a href="https://www.transparencia.mg.gov.br/patrimonio/frota" target="_blank">link</a>)</td>
+                                <td><a href="https://www.transparencia.mg.gov.br/patrimonio/frota" target="_blank">testar</a></td>
+                                <td><input type="checkbox" class="atende-check opcional" data-section="14.2" data-item="7" data-type="atende"></td>
+                                <td><input type="checkbox" class="nao-atende-check opcional" data-section="14.2" data-item="7" data-type="nao"></td>
+                                <td><input type="checkbox" class="na-check opcional" data-section="14.2" data-item="7" data-type="na"></td>
+                                <td><input type="text" class="observations-input" placeholder="Observações"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-text">
+                    ℹ️ Itens opcionais (Participação Social e Bens) não são considerados no cálculo do percentual de conformidade.
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Section com Relatório Detalhado -->
+        <div class="checklist-section" id="resultSection" style="background: #f0fff4;">
+            <h2 class="section-title">📊 Resultado da Avaliação</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                <div>
+                    <p style="font-size: 48px; font-weight: 700;" id="finalPercentage">0%</p>
+                    <p style="font-size: 18px; color: #276749;">Percentual de conformidade (itens obrigatórios)</p>
+                    <div id="classificacaoEmoji" style="font-size: 32px; margin-top: 10px;"></div>
+                    <div id="classificacaoTexto" style="font-size: 20px; font-weight: 600; margin-top: 5px;"></div>
+                </div>
+                <div>
+                    <h3 style="color: #2c5282;">📋 Resumo da Avaliação</h3>
+                    <p id="resumoItens" style="font-size: 16px; margin: 10px 0;"></p>
+                    <p id="resumoEspecificos" style="font-size: 16px; margin: 10px 0;"></p>
+                </div>
+            </div>
+
+            <!-- Relatório de Itens Atendidos e Pendentes -->
+            <div class="relatorio-final">
+                <h3>✅ Itens Obrigatórios Atendidos</h3>
+                <div id="itensAtendidos" style="max-height: 200px; overflow-y: auto; margin-bottom: 20px;"></div>
+                
+                <h3>❌ Itens Obrigatórios Pendentes</h3>
+                <div id="itensPendentes" style="max-height: 200px; overflow-y: auto; margin-bottom: 20px;"></div>
+
+                <div id="especificosRelatorio" style="margin-top: 20px;"></div>
+
+                <h3>📝 Recomendações Gerais</h3>
+                <div id="recomendacoesFinais" style="background: #ebf8ff; padding: 15px; border-radius: 8px;"></div>
+            </div>
+        </div>
+
+        <div class="actions no-print">
+            <button class="btn btn-secondary" onclick="resetForm()">
+                <span>↺</span> Reiniciar Avaliação
+            </button>
+            <button class="btn btn-primary" onclick="calculatePercentage()">
+                <span>📊</span> Calcular Percentual
+            </button>
+            <button class="btn btn-success" onclick="generatePDF()">
+                <span>📄</span> Gerar PDF para Impressão
+            </button>
+        </div>
+
+        <div class="footer">
+            ⚠️ Versão completa com obrigatoriedades, itens específicos condicionais e links de teste. 
+            Impressão otimizada para formato paisagem.
+        </div>
+    </div>
+
+    <div class="modal" id="pdfModal">
+        <div class="modal-content">
+            <h3>✅ PDF Gerado com Sucesso!</h3>
+            <p>Clique no botão abaixo para imprimir ou salvar o relatório.</p>
+            <button class="btn btn-success" onclick="window.print()">
+                <span>🖨️</span> Imprimir / Salvar PDF
+            </button>
+            <button class="btn btn-secondary" onclick="closeModal()" style="margin-top: 10px;">
+                Fechar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date as default
+        document.getElementById('data').valueAsDate = new Date();
+
+        // Mutually exclusive checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const row = this.closest('tr');
+                if (!row) return;
+                
+                const atende = row.querySelector('.atende-check');
+                const naoAtende = row.querySelector('.nao-atende-check');
+                const na = row.querySelector('.na-check');
+                
+                if (this.classList.contains('atende-check') && this.checked) {
+                    if (naoAtende) naoAtende.checked = false;
+                    if (na) na.checked = false;
+                } else if (this.classList.contains('nao-atende-check') && this.checked) {
+                    if (atende) atende.checked = false;
+                    if (na) na.checked = false;
+                } else if (this.classList.contains('na-check') && this.checked) {
+                    if (atende) atende.checked = false;
+                    if (naoAtende) naoAtende.checked = false;
+                }
+                
+                calculatePercentage();
+            });
+        });
+
+        function toggleEspecifico() {
+            const teveTCE = document.getElementById('teveTCE').value;
+            const teveDoacao = document.getElementById('teveDoacao').value;
+            
+            document.getElementById('tceSection').style.display = teveTCE === 'sim' ? 'block' : 'none';
+            document.getElementById('doacaoSection').style.display = teveDoacao === 'sim' ? 'block' : 'none';
+            
+            calculatePercentage();
+        }
+
+        function calculatePercentage() {
+            // Contar apenas itens obrigatórios (excluir opcionais e específicos não aplicáveis)
+            let validCriteria = 0;
+            let atendidos = 0;
+            const itensAtendidosList = [];
+            const itensPendentesList = [];
+            
+            document.querySelectorAll('tr').forEach(row => {
+                const itemCell = row.cells[0];
+                const atende = row.querySelector('.atende-check');
+                const naoAtende = row.querySelector('.nao-atende-check');
+                const na = row.querySelector('.na-check');
+                
+                // Verificar se é obrigatório (tem a classe 'obrigatorio' ou é específico aplicável)
+                let isObrigatorio = false;
+                
+                if (atende && atende.classList.contains('obrigatorio')) {
+                    isObrigatorio = true;
+                }
+                
+                // Verificar específicos do TCE
+                if (atende && atende.classList.contains('especifico-tce') && document.getElementById('teveTCE').value === 'sim') {
+                    isObrigatorio = true;
+                }
+                
+                // Verificar específicos de Doação
+                if (atende && atende.classList.contains('especifico-doacao') && document.getElementById('teveDoacao').value === 'sim') {
+                    isObrigatorio = true;
+                }
+                
+                if (isObrigatorio && itemCell) {
+                    // Se NA estiver marcado, não conta
+                    if (na && na.checked) {
+                        // Não conta
+                    } else {
+                        validCriteria++;
+                        const itemName = itemCell.textContent.trim();
+                        if (atende && atende.checked) {
+                            atendidos++;
+                            itensAtendidosList.push(`✅ ${itemName}`);
+                        } else if (naoAtende && naoAtende.checked) {
+                            itensPendentesList.push(`❌ ${itemName}`);
+                        }
+                    }
+                }
+            });
+            
+            const percentage = validCriteria > 0 ? Math.round((atendidos / validCriteria) * 100) : 0;
+            
+            // Atualizar barra de progresso
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressFill').textContent = percentage + '%';
+            document.getElementById('percentageDisplay').textContent = percentage + '% de conformidade (itens obrigatórios)';
+            document.getElementById('finalPercentage').textContent = percentage + '%';
+            
+            // Classificação com emojis e cores
+            const classificacaoEmoji = document.getElementById('classificacaoEmoji');
+            const classificacaoTexto = document.getElementById('classificacaoTexto');
+            
+            if (percentage >= 90) {
+                classificacaoEmoji.innerHTML = '🌟🌟🌟🌟🌟';
+                classificacaoTexto.innerHTML = '<span style="color: #2f855a;">EXCELENTE! Acima de 90%</span>';
+            } else if (percentage >= 80) {
+                classificacaoEmoji.innerHTML = '🌟🌟🌟🌟';
+                classificacaoTexto.innerHTML = '<span style="color: #3182ce;">BOM! Acima de 80%</span>';
+            } else if (percentage >= 70) {
+                classificacaoEmoji.innerHTML = '🌟🌟🌟';
+                classificacaoTexto.innerHTML = '<span style="color: #d69e2e;">REGULAR! Acima de 70%</span>';
+            } else if (percentage >= 60) {
+                classificacaoEmoji.innerHTML = '🌟🌟';
+                classificacaoTexto.innerHTML = '<span style="color: #dd6b20;">RUIM! Acima de 60%</span>';
+            } else {
+                classificacaoEmoji.innerHTML = '🌟';
+                classificacaoTexto.innerHTML = '<span style="color: #c53030;">PÉSSIMO! Abaixo de 60%</span>';
+            }
+            
+            // Atualizar resumo
+            document.getElementById('resumoItens').innerHTML = 
+                `Total de itens obrigatórios considerados: <strong>${validCriteria}</strong><br>` +
+                `Itens atendidos: <strong>${atendidos}</strong><br>` +
+                `Itens pendentes: <strong>${validCriteria - atendidos}</strong>`;
+            
+            // Verificar itens específicos
+            const teveTCE = document.getElementById('teveTCE').value;
+            const teveDoacao = document.getElementById('teveDoacao').value;
+            let especificoMsg = '';
+            
+            if (teveTCE === 'sim') {
+                especificoMsg += '⚠️ Órgão com processos no TCE/MG - itens específicos obrigatórios.<br>';
+            } else if (teveTCE === 'nao') {
+                especificoMsg += '✅ Órgão sem processos no TCE/MG - itens específicos não exigidos.<br>';
+            }
+            
+            if (teveDoacao === 'sim') {
+                especificoMsg += '⚠️ Órgão com doações/comodatos - itens específicos obrigatórios.<br>';
+            } else if (teveDoacao === 'nao') {
+                especificoMsg += '✅ Órgão sem doações/comodatos - itens específicos não exigidos.<br>';
+            }
+            
+            document.getElementById('resumoEspecificos').innerHTML = especificoMsg;
+            
+            // Preencher listas de atendidos e pendentes
+            document.getElementById('itensAtendidos').innerHTML = itensAtendidosList.length > 0 ? 
+                itensAtendidosList.map(item => `<div class="relatorio-item item-atendido">${item}</div>`).join('') : 
+                '<p>Nenhum item obrigatório atendido.</p>';
+            
+            document.getElementById('itensPendentes').innerHTML = itensPendentesList.length > 0 ? 
+                itensPendentesList.map(item => `<div class="relatorio-item item-pendente">${item}</div>`).join('') : 
+                '<p>✓ Todos os itens obrigatórios foram atendidos!</p>';
+            
+            // Recomendações finais
+            const recomendacoes = [];
+            if (itensPendentesList.length > 0) {
+                recomendacoes.push('• Priorizar a correção dos itens pendentes listados acima.');
+                recomendacoes.push('• Verificar funcionamento de todos os links de teste.');
+                if (teveTCE === 'sim') {
+                    recomendacoes.push('• Garantir a publicação dos procedimentos enviados ao TCE/MG.');
+                }
+                if (teveDoacao === 'sim') {
+                    recomendacoes.push('• Manter atualizada a relação de doações e comodatos.');
+                }
+            } else {
+                recomendacoes.push('• Parabéns! Todos os itens obrigatórios foram atendidos.');
+                recomendacoes.push('• Manter a atualização periódica das informações.');
+            }
+            
+            document.getElementById('recomendacoesFinais').innerHTML = recomendacoes.join('<br>');
+            
+            return percentage;
+        }
+
+        function resetForm() {
+            if (confirm('Tem certeza que deseja reiniciar a avaliação? Todos os dados preenchidos serão perdidos.')) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('input[type="text"], input[type="email"], select').forEach(input => {
+                    if (input.id !== 'orgao' && input.id !== 'sigla' && input.id !== 'responsavel' && input.id !== 'email') {
+                        input.value = '';
+                    }
+                });
+                document.getElementById('data').valueAsDate = new Date();
+                document.getElementById('teveTCE').value = '';
+                document.getElementById('teveDoacao').value = '';
+                document.getElementById('tceSection').style.display = 'none';
+                document.getElementById('doacaoSection').style.display = 'none';
+                calculatePercentage();
+            }
+        }
+
+        function generatePDF() {
+            calculatePercentage();
+            document.getElementById('pdfModal').style.display = 'flex';
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+
+        function closeModal() {
+            document.getElementById('pdfModal').style.display = 'none';
+        }
+
+        // Initial calculation
+        calculatePercentage();
+    </script>
+</body>
+</html>
